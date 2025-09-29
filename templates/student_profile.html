@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Profile | AI Internship Recommender</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-glow: rgba(191, 92, 255, 0.6);
+            --secondary-glow: rgba(0, 225, 255, 0.6);
+            --bg-color: #0a021a;
+            --card-bg-color: rgba(15, 5, 30, 0.65);
+            --border-color: rgba(191, 92, 255, 0.3);
+            --text-color: #f0f0f0;
+            --text-muted-color: #8892b0;
+            --accent-color: #bf5cff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://images.unsplash.com/photo-1593339790152-3b66ab4a7322?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+        .navbar-brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .navbar-logo {
+            width: 32px;
+            height: 32px;
+            color: var(--accent-color);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color) !important;
+            text-decoration: none;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .btn-logout {
+            background-color: rgba(255, 82, 82, 0.2);
+            border: 1px solid rgba(255, 82, 82, 0.5);
+            color: #ff8a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-logout:hover {
+            background-color: rgba(255, 82, 82, 0.4);
+            color: white;
+        }
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg-color);
+            text-decoration: none;
+        }
+        
+        .profile-card {
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 0 40px rgba(100, 80, 255, 0.1);
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: 3px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+        .profile-info h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .profile-info p {
+            font-size: 1.1rem;
+            color: var(--text-muted-color);
+            margin: 0.5rem 0 0 0;
+        }
+        .btn-edit-profile {
+            margin-left: auto;
+            background-color: rgba(191, 92, 255, 0.15);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-edit-profile:hover {
+            background-color: rgba(191, 92, 255, 0.3);
+        }
+
+        .profile-body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+        }
+        .profile-section {
+             border-bottom: 1px solid var(--border-color);
+             padding-bottom: 2.5rem;
+             margin-bottom: 1rem;
+        }
+        .profile-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .profile-section h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+        .info-grid p { margin: 0 0 1rem 0; }
+        .info-grid strong {
+            display: block;
+            color: var(--text-muted-color);
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-color);
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        .social-links a:hover {
+            background-color: rgba(191, 92, 255, 0.3);
+        }
+        
+        .experience-item, .project-item {
+            margin-bottom: 1.5rem;
+        }
+        .experience-item h5, .project-item h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+        }
+        .experience-item p, .project-item p {
+            color: var(--text-muted-color);
+            margin: 0;
+            white-space: pre-wrap; /* To respect newlines from textarea */
+        }
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .skill-tag {
+            background-color: rgba(191, 92, 255, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            width: 100%;
+            max-width: 800px;
+            margin: 1rem;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 2rem;
+        }
+        .modal-header h4 { font-size: 1.5rem; color: var(--accent-color); }
+        .modal-body { max-height: 70vh; overflow-y: auto; padding-right: 1rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .modal .form-control { width: 100%; padding: 0.875rem; background-color: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-color); }
+        .modal .btn-primary { background-color: var(--accent-color); color: var(--bg-color); font-weight: bold; border: none; padding: 0.75rem 1.5rem; }
+        textarea.form-control { min-height: 120px; }
+        hr { border-color: var(--border-color); }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <nav class="navbar">
+        <div class="navbar-brand-container">
+            <svg class="navbar-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.5 21.75l-.398-1.178a3.375 3.375 0 00-2.455-2.456L12.75 18l1.178-.398a3.375 3.375 0 002.455-2.456L16.5 14.25l.398 1.178a3.375 3.375 0 002.456 2.456L20.25 18l-1.178.398a3.375 3.375 0 00-2.456 2.456z"/></svg>
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">AI Internship Recommender</a>
+        </div>
+        <div class="nav-actions">
+            <a href="{{ url_for('dashboard') }}" class="profile-avatar">
+                {{ user.name[0] | upper if user.name else 'U' }}
+            </a>
+            <a class="btn-logout" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-picture">{{ (prof_info.fullname or user.name)[0] | upper if (prof_info or user) else 'U' }}</div>
+            <div class="profile-info">
+                <h1>{{ prof_info.fullname if prof_info and prof_info.fullname else user.name }}</h1>
+                <p>{{ prof_info.college if prof_info and prof_info.college else 'College not specified' }}</p>
+            </div>
+            <button class="btn-edit-profile" onclick="toggleModal()">Edit Profile</button>
+        </div>
+        <div class="profile-body">
+            
+            <div class="profile-section">
+                <h4>About Me</h4>
+                <p>{{ prof_info.bio if prof_info and prof_info.bio else "No bio provided. Click 'Edit Profile' to add one." }}</p>
+            </div>
+            
+            <div class="profile-section">
+                <h4>Work Experience</h4>
+                <div class="experience-item">
+                    <p>{{ prof_info.work_experience if prof_info and prof_info.work_experience else "No work experience listed." }}</p>
+                </div>
+            </div>
+            
+            <div class="profile-section">
+                <h4>Projects</h4>
+                 <div class="project-item">
+                    <p>{{ prof_info.projects if prof_info and prof_info.projects else "No projects listed." }}</p>
+                </div>
+            </div>
+            
+            <div class="profile-section">
+                <h4>Technical Skills</h4>
+                <div class="skills-container">
+                    {% if prof_info and prof_info.skills %}
+                        {% for skill in prof_info.skills.split(',') %}
+                            {% if skill.strip() %}
+                                <span class="skill-tag">{{ skill.strip() }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No skills listed.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h4>Contact & Links</h4>
+                <div class="info-grid">
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <div class="social-links">
+                        {% if prof_info and prof_info.linkedin_url %}<a href="{{ prof_info.linkedin_url }}" target="_blank">LinkedIn</a>{% endif %}
+                        {% if prof_info and prof_info.github_url %}<a href="{{ prof_info.github_url }}" target="_blank">GitHub</a>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Edit Your Professional Details</h4>
+        </div>
+        <form class="p-3 modal-body" method="POST" action="{{ url_for('view_student_profile') }}">
+            <h5>Basic Information</h5>
+            <div class="form-row mb-3">
+                <div class="form-group"><label class="form-label">Full Name</label><input type="text" name="fullname" class="form-control" value="{{ prof_info.fullname if prof_info else user.name }}"></div>
+                <div class="form-group"><label class="form-label">Graduation Year</label><input type="number" name="graduation_year" class="form-control" value="{{ prof_info.graduation_year if prof_info else '' }}" placeholder="e.g., 2026" min="2020"></div>
+            </div>
+             <div class="form-row mb-3">
+                <div class="form-group"><label class="form-label">College</label><input type="text" name="college" class="form-control" value="{{ prof_info.college if prof_info else '' }}"></div>
+                <div class="form-group"><label class="form-label">CGPA</label><input type="text" name="cgpa" class="form-control" value="{{ prof_info.cgpa if prof_info else '' }}" placeholder="e.g., 8.5/10"></div>
+            </div>
+             <div class="mb-3">
+                <label class="form-label">Professional Bio / Summary</label>
+                <textarea name="bio" class="form-control">{{ prof_info.bio if prof_info else '' }}</textarea>
+            </div>
+            
+            <hr class="my-4">
+            <h5>Professional Links</h5>
+            <div class="form-row mb-3">
+                 <div class="form-group"><label class="form-label">LinkedIn Profile URL</label><input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/yourname" value="{{ prof_info.linkedin_url if prof_info else '' }}"></div>
+                <div class="form-group"><label class="form-label">GitHub Profile URL</label><input type="url" name="github_url" class="form-control" placeholder="https://github.com/yourusername" value="{{ prof_info.github_url if prof_info else '' }}"></div>
+            </div>
+
+            <hr class="my-4">
+            <h5>Experience, Projects & Skills</h5>
+            <div class="mb-3">
+                <label class="form-label">Work Experience</label>
+                <textarea name="work_experience" class="form-control" placeholder="List each job on a new line...">{{ prof_info.work_experience if prof_info else '' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Projects</label>
+                <textarea name="projects" class="form-control" placeholder="List each project on a new line...">{{ prof_info.projects if prof_info else '' }}</textarea>
+            </div>
+             <div class="mb-3">
+                <label class="form-label">Technical Skills (comma-separated)</label>
+                <input type="text" name="skills" class="form-control" placeholder="e.g., Python, SQL, React, TensorFlow" value="{{ prof_info.skills if prof_info else '' }}">
+            </div>
+
+            <button type="submit" class="btn-primary mt-3">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('profileModal');
+
+    function toggleModal(event) {
+        if (event && event.target === modal) {
+            modal.style.display = 'none';
+            return;
+        }
+        if (modal.style.display === 'flex') {
+            modal.style.display = 'none';
+        } else {
+            modal.style.display = 'flex';
+        }
+    }
+    
+    window.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            modal.style.display = 'none'
+        }
+    });
+</script>
+
+</body>
+</html>
+

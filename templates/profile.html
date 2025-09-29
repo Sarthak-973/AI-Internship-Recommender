@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | AI Internship Recommender</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-glow: rgba(191, 92, 255, 0.6);
+            --secondary-glow: rgba(0, 225, 255, 0.6);
+            --bg-color: #0a021a;
+            --card-bg-color: rgba(15, 5, 30, 0.75);
+            --border-color: rgba(191, 92, 255, 0.3);
+            --text-color: #f0f0f0;
+            --text-muted-color: #8892b0;
+            --accent-color: #bf5cff;
+            --success-color: #00ffc3;
+            --warning-color: #ffde59;
+            --danger-color: #ff5252;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://images.unsplash.com/photo-1593339790152-3b66ab4a7322?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1600px;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+        .navbar-brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .navbar-logo { width: 32px; height: 32px; color: var(--accent-color); }
+        .navbar-brand { font-size: 1.5rem; font-weight: 700; color: var(--text-color) !important; text-decoration: none; }
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+        .btn-logout {
+            background-color: rgba(255, 82, 82, 0.2);
+            border: 1px solid rgba(255, 82, 82, 0.5);
+            color: #ff8a8a;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-logout:hover { background-color: rgba(255, 82, 82, 0.4); color: white; }
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--bg-color);
+            text-decoration: none;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        .card h4 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .welcome-header { margin-bottom: 2rem; }
+        .welcome-header h1 { font-size: 2.5rem; margin: 0; }
+        .welcome-header p { font-size: 1.1rem; color: var(--text-muted-color); }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        
+        .main-content, .sidebar {
+            min-width: 0; /* Prevents grid blowout */
+        }
+
+        .main-content .card, .sidebar .card {
+            margin-bottom: 2rem;
+        }
+        .sidebar .card:last-child {
+            margin-bottom: 0;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--success-color); }
+        .stat-label { color: var(--text-muted-color); font-size: 0.9rem; }
+        
+        .start-test-card { 
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .btn-action {
+            display: inline-block;
+            background-color: var(--success-color);
+            color: var(--bg-color);
+            font-weight: bold;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+            margin-top: 1rem;
+        }
+        .btn-action:hover { transform: scale(1.05); }
+
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .domain-card {
+            position: relative;
+            height: 120px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .domain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3), 0 0 20px var(--primary-glow);
+        }
+        .domain-card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: brightness(0.6);
+            transition: filter 0.3s ease;
+        }
+        .domain-card:hover img { filter: brightness(0.4); }
+        .domain-title {
+            font-weight: 600;
+            font-size: 1rem;
+            z-index: 2;
+        }
+
+        .news-card {
+            padding-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .news-scroll-wrapper { width: 100%; }
+        .news-scroll-wrapper:hover .news-scroll-container { animation-play-state: paused; }
+        .news-scroll-container {
+            display: flex;
+            width: fit-content;
+            animation: marquee 60s linear infinite;
+        }
+        .news-item {
+            flex: 0 0 300px;
+            width: 300px;
+            margin-right: 1rem;
+            height: 180px;
+            position: relative;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .news-item:hover { transform: translateY(-5px); }
+        .news-item-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: brightness(0.7);
+        }
+        .news-item-content { z-index: 2; }
+        .news-item-title { font-weight: 600; line-height: 1.3; font-size: 0.9rem; }
+        .news-item-source { font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8; }
+
+        #domain-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            color: var(--text-muted-color);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        #modal-title { margin-top: 0; color: var(--accent-color); }
+        .modal-section { margin-bottom: 2rem; }
+        .modal-section h5 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--success-color);
+            padding-left: 1rem;
+        }
+        .modal-section ul { list-style-type: none; padding-left: 0; }
+        .modal-section li { margin-bottom: 0.5rem; }
+        .modal-section a { color: var(--success-color); text-decoration: none; }
+         .modal-section p { color: var(--text-muted-color); line-height: 1.6; }
+
+        .analyzer-results { display: none; margin-top: 1.5rem; }
+        .ats-score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto 1rem auto;
+            position: relative;
+        }
+         .ats-score-circle::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            background: var(--card-bg-color);
+            border-radius: 50%;
+        }
+        .ats-score-text { z-index: 1; }
+        .loader {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 1rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .skills-container { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .skill-tag { background-color: rgba(191, 92, 255, 0.15); padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <nav class="navbar">
+        <div class="navbar-brand-container">
+            <svg class="navbar-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.5 21.75l-.398-1.178a3.375 3.375 0 00-2.455-2.456L12.75 18l1.178-.398a3.375 3.375 0 002.455-2.456L16.5 14.25l.398 1.178a3.375 3.375 0 002.456 2.456L20.25 18l-1.178.398a3.375 3.375 0 00-2.456 2.456z"/></svg>
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">AI Internship Recommender</a>
+        </div>
+        <div class="nav-actions">
+            <a href="{{ url_for('view_student_profile') }}" class="profile-avatar">
+                {{ user.name[0] | upper if user.name else 'U' }}
+            </a>
+            <a class="btn-logout" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="welcome-header">
+        <h1>Welcome back, {{ user.name.split(' ')[0] }}!</h1>
+        <p>Ready to take the next step in your career? Let's get started.</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="main-content">
+            <div class="card performance-card">
+                <h4>Performance Trend</h4>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+             <div class="card">
+                <h4>Performance Overview</h4>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ stats.tests_taken or 0 }}</div>
+                        <div class="stat-label">Tests Taken</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ stats.average_score or 0 }}%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ stats.best_score or 0 }}%</div>
+                        <div class="stat-label">Best Score</div>
+                    </div>
+                </div>
+            </div>
+             <div class="card news-card" style="grid-column: 1 / -1;">
+                <h4>Latest Tech News</h4>
+                <div class="news-scroll-wrapper">
+                    <div class="news-scroll-container">
+                        {% for domain_key in ['ai', 'data', 'frontend', 'backend'] %}
+                            {% for article in tech_news[domain_key] %}
+                            <a href="{{ article.url }}" target="_blank" class="news-item">
+                                <img src="{{ article.image }}" alt="{{ article.title }}" class="news-item-img">
+                                <div class="news-item-content">
+                                    <div class="news-item-title">{{ article.title }}</div>
+                                    <div class="news-item-source">{{ article.source }}</div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for domain_key in ['ai', 'data', 'frontend', 'backend'] %}
+                            {% for article in tech_news[domain_key] %}
+                            <a href="{{ article.url }}" target="_blank" class="news-item">
+                                <img src="{{ article.image }}" alt="{{ article.title }}" class="news-item-img">
+                                <div class="news-item-content">
+                                    <div class="news-item-title">{{ article.title }}</div>
+                                    <div class="news-item-source">{{ article.source }}</div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+             <div class="card start-test-card">
+                <h4>Ready for a new challenge?</h4>
+                <p>Take a test to get fresh internship recommendations based on your skills.</p>
+                <a class="btn-action" href="{{ url_for('start_test', section='all') }}">Start New Test</a>
+            </div>
+            <div class="card">
+                <h4>Explore Domains</h4>
+                <div class="domain-grid">
+                    {% for key, domain in domain_details.items() %}
+                    <a href="#" class="domain-card" data-domain-key="{{ key }}">
+                        <img src="{{ domain.image }}" alt="{{ domain.title }}">
+                        <div class="domain-title">{{ domain.title }}</div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+             <div class="card start-test-card">
+                <h4>Resume Analyzer</h4>
+                <p class="text-muted-color" style="font-size: 0.9rem;">Get an ATS score and job recommendations.</p>
+                 <a href="{{ url_for('resume_analyzer') }}" class="btn-action" style="background-color: var(--accent-color);">Analyze Resume</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DOMAIN DETAILS MODAL -->
+<div id="domain-modal">
+    <div class="modal-content">
+        <button class="modal-close-btn">&times;</button>
+        <h2 id="modal-title"></h2>
+        <div class="modal-section"><h5>Learning Roadmap</h5><ul id="modal-what-to-learn"></ul></div>
+        <div class="modal-section"><h5>Free Resources</h5><ul id="modal-resources"></ul></div>
+        <div class="modal-section"><h5>Certifications</h5><ul id="modal-certifications"></ul></div>
+        <div class="modal-section"><h5>Guidance</h5><p id="modal-guidance"></p></div>
+    </div>
+</div>
+
+<div id="data-container" 
+    data-domains='{{ domain_details | tojson | safe }}'
+    data-chart-labels='{{ chart_labels | safe }}'
+    data-chart-scores='{{ chart_scores | safe }}'
+    style="display: none;">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dataElement = document.getElementById('data-container');
+        
+        let domainDetails = {};
+        let chartLabels = [];
+        let chartScores = [];
+
+        try {
+            domainDetails = JSON.parse(dataElement.dataset.domains.replace(/&#39;/g, "'"));
+            chartLabels = JSON.parse(dataElement.dataset.chartLabels);
+            chartScores = JSON.parse(dataElement.dataset.chartScores);
+        } catch(e) {
+            console.error("Could not parse chart data:", e)
+        }
+
+
+        // --- Domain Modal Logic ---
+        const domainCards = document.querySelectorAll('.domain-card');
+        const modal = document.getElementById('domain-modal');
+        const closeModalBtn = modal.querySelector('.modal-close-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const whatToLearnList = document.getElementById('modal-what-to-learn');
+        const resourcesList = document.getElementById('modal-resources');
+        const certificationsList = document.getElementById('modal-certifications');
+        const guidanceP = document.getElementById('modal-guidance');
+
+        function openModal(domainKey) {
+            const data = domainDetails[domainKey];
+            if (!data) return;
+            modalTitle.textContent = data.title;
+            guidanceP.textContent = data.guidance;
+            whatToLearnList.innerHTML = data.what_to_learn.map(item => `<li>${item}</li>`).join('');
+            resourcesList.innerHTML = data.resources.map(item => `<li><a href="${item.url}" target="_blank">${item.name}</a></li>`).join('');
+            certificationsList.innerHTML = data.certifications.map(item => `<li>${item}</li>`).join('');
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        domainCards.forEach(card => card.addEventListener('click', e => { e.preventDefault(); openModal(e.currentTarget.dataset.domainKey); }));
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
+
+        // --- Performance Chart Logic ---
+        const ctx = document.getElementById('performanceChart');
+        if (ctx && chartScores.length > 0) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Test Score %',
+                        data: chartScores,
+                        fill: true,
+                        backgroundColor: 'rgba(0, 255, 195, 0.1)',
+                        borderColor: 'rgba(0, 255, 195, 1)',
+                        tension: 0.3,
+                        pointBackgroundColor: 'rgba(0, 255, 195, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 7,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: 'var(--text-muted-color)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'var(--text-muted-color)' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Internship Assessment</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-glow: rgba(191, 92, 255, 0.6);
+            --secondary-glow: rgba(0, 225, 255, 0.6);
+            --bg-color: #0a021a;
+            --card-bg-color: rgba(15, 5, 30, 0.85);
+            --border-color: rgba(191, 92, 255, 0.3);
+            --text-color: #f0f0f0;
+            --text-muted-color: #8892b0;
+            --accent-color: #bf5cff;
+            --success-color: #00ffc3;
+            --warning-color: #ffde59;
+            --danger-color: #ff5252;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* --- Proctoring Warning Modal --- */
+        #warning-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        .warning-card {
+             background-color: var(--card-bg-color);
+            border: 1px solid var(--danger-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            max-width: 500px;
+        }
+        .warning-card h2 {
+            color: var(--danger-color);
+        }
+        #warning-btn {
+            background-color: var(--warning-color);
+            color: var(--bg-color);
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+
+        /* --- Pre-Test Instructions Screen --- */
+        #instructions-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            padding: 2rem;
+        }
+        .instructions-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            max-width: 600px;
+            text-align: center;
+        }
+        #start-test-btn {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        #start-test-btn:hover { transform: scale(1.05); }
+        #start-test-btn:disabled { background-color: #555; cursor: not-allowed; }
+
+        /* --- Main Test UI --- */
+        #test-ui {
+            display: none; /* Hidden until test starts */
+            height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            grid-template-columns: 1fr 300px;
+            grid-template-areas:
+                "header header"
+                "main sidebar";
+        }
+
+        /* --- Header --- */
+        .test-header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            background-color: var(--card-bg-color);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        .header-title { font-size: 1.5rem; font-weight: 600; }
+        .timer-container { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 500; }
+        #timer { color: var(--warning-color); }
+        .proctoring-feed {
+            width: 80px;
+            height: 60px;
+            border-radius: 0.5rem;
+            background-color: #000;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- Main Content (Question Area) --- */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .question-card { display: none; }
+        .question-card.active { display: block; }
+        .question-text { font-size: 1.2rem; margin-bottom: 2rem; }
+        .options-container .form-check { margin-bottom: 1rem; }
+        .options-container .form-check-label {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            display: block;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .options-container .form-check-input { display: none; }
+        .options-container .form-check-input:checked + .form-check-label {
+            background-color: rgba(191, 92, 255, 0.2);
+            border-color: var(--accent-color);
+        }
+        .navigation-controls {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .btn-primary { background-color: var(--accent-color); color: var(--bg-color); font-weight: 600; }
+        .btn-success { background-color: var(--success-color); color: var(--bg-color); font-weight: 600; }
+        .btn-warning { border-color: var(--warning-color); color: var(--warning-color); }
+        
+        /* --- Sidebar --- */
+        .sidebar {
+            grid-area: sidebar;
+            background-color: var(--card-bg-color);
+            border-left: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .question-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .palette-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .palette-item.current {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+        .palette-item.answered { background-color: var(--success-color); color: var(--bg-color); border: none; }
+        .palette-item.marked { box-shadow: 0 0 0 2px var(--warning-color); }
+
+        .sidebar-legend { margin-top: auto; }
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem;}
+        .legend-color { width: 15px; height: 15px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- PROCTORING WARNING MODAL -->
+<div id="warning-modal">
+    <div class="warning-card">
+        <h2>Warning</h2>
+        <p id="warning-message"></p>
+        <button id="warning-btn">I Understand</button>
+    </div>
+</div>
+
+<!-- INSTRUCTIONS SCREEN -->
+<div id="instructions-screen">
+    <div class="instructions-card">
+        <h2>Assessment Instructions</h2>
+        <p class="text-muted">Please read the following instructions carefully.</p>
+        <ul>
+            <li>This is a timed test. Please complete it in one sitting.</li>
+            <li>The test will automatically enter full-screen mode.</li>
+            <li>Webcam proctoring is enabled. Please grant camera access.</li>
+            <li>Do not switch tabs or exit full-screen. Doing so repeatedly will result in automatic submission.</li>
+        </ul>
+        <p id="cam-status" style="color: var(--warning-color);">Waiting for camera access...</p>
+        <button id="start-test-btn" disabled>Start Test</button>
+    </div>
+</div>
+
+<!-- MAIN TEST UI -->
+<div id="test-ui">
+    <header class="test-header">
+        <div class="header-title">AI Internship Assessment</div>
+        <div class="timer-container">
+            <span>Time Left:</span>
+            <span id="timer">30:00</span>
+        </div>
+        <video id="webcam" class="proctoring-feed" autoplay playsinline muted></video>
+    </header>
+
+    <main class="main-content">
+        <form method="post" action="{{ url_for('submit_test') }}" id="test-form">
+            {% for q in questions %}
+                {% set outer_loop = loop %}
+                <div class="question-card {% if loop.first %}active{% endif %}" id="q-card-{{ loop.index0 }}">
+                    <p class="question-text"><strong>Question {{ loop.index }}.</strong> {{ q.question | safe }}</p>
+                    <div class="options-container">
+                        {% for opt in ['A','B','C','D'] %}
+                            {% if q['option_' + opt.lower()] %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="q_{{ q.id }}" 
+                                           id="q_{{ q.id }}_{{ opt }}" 
+                                           value="{{ opt }}"
+                                           data-question-index="{{ outer_loop.index0 }}">
+                                    <label class="form-check-label" for="q_{{ q.id }}_{{ opt }}">
+                                        <strong>{{ opt }}.</strong> {{ q['option_' + opt.lower()] }}
+                                    </label>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </form>
+         <div class="navigation-controls">
+            <div>
+                <button type="button" class="btn btn-warning" id="mark-btn">Mark for Review</button>
+                <button type="button" class="btn" id="clear-btn">Clear Answer</button>
+            </div>
+            <div>
+                <button type="button" class="btn" id="prev-btn">Previous</button>
+                <button type="button" class="btn btn-primary" id="next-btn">Next</button>
+                <button type="button" class="btn btn-success" id="finish-btn" style="display:none;">Finish Test</button>
+            </div>
+        </div>
+    </main>
+    
+    <aside class="sidebar">
+        <h5>Question Palette</h5>
+        <div class="question-palette" id="question-palette">
+            {% for q in questions %}
+                <div class="palette-item" data-question-index="{{ loop.index0 }}">{{ loop.index }}</div>
+            {% endfor %}
+        </div>
+        <div class="sidebar-legend">
+            <div class="legend-item"><div class="legend-color" style="background:var(--success-color);"></div> Answered</div>
+            <div class="legend-item"><div class="legend-color" style="border:1px solid var(--border-color);"></div> Not Answered</div>
+            <div class="legend-item"><div class="legend-color" style="box-shadow: 0 0 0 2px var(--warning-color); background: transparent;"></div> Marked for Review</div>
+             <div class="legend-item"><div class="legend-color" style="background:var(--accent-color);"></div> Current</div>
+        </div>
+    </aside>
+</div>
+
+<div id="test-data"
+     data-questions='{{ questions | tojson | safe }}'
+     data-time-limit="{{ session.time_limit or 1800 }}"
+     style="display: none;">
+</div>
+
+<script>
+    const testDataElement = document.getElementById('test-data');
+    const questions = JSON.parse(testDataElement.dataset.questions);
+    let time = parseInt(testDataElement.dataset.timeLimit, 10);
+
+    const totalQuestions = questions.length;
+    let currentQuestionIndex = 0;
+    
+    const questionStates = new Array(totalQuestions).fill(0);
+
+    const startBtn = document.getElementById('start-test-btn');
+    const instructionsScreen = document.getElementById('instructions-screen');
+    const testUI = document.getElementById('test-ui');
+    const testForm = document.getElementById('test-form');
+    
+    const questionCards = document.querySelectorAll('.question-card');
+    const paletteItems = document.querySelectorAll('.palette-item');
+
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const markBtn = document.getElementById('mark-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const finishBtn = document.getElementById('finish-btn');
+
+    // --- PROCTORING VARIABLES ---
+    const warningModal = document.getElementById('warning-modal');
+    const warningMessage = document.getElementById('warning-message');
+    const warningBtn = document.getElementById('warning-btn');
+    let violationCount = 0;
+    let testStarted = false;
+
+
+    // --- 1. PRE-TEST & WEBCAM SETUP ---
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            document.getElementById("webcam").srcObject = stream;
+            document.getElementById('cam-status').textContent = 'Camera ready!';
+            document.getElementById('cam-status').style.color = 'var(--success-color)';
+            startBtn.disabled = false;
+        })
+        .catch(err => {
+            document.getElementById('cam-status').textContent = 'Camera access denied. Please enable camera to start.';
+            document.getElementById('cam-status').style.color = 'var(--danger-color)';
+        });
+    
+    startBtn.addEventListener('click', () => {
+        instructionsScreen.style.display = 'none';
+        testUI.style.display = 'grid';
+        document.documentElement.requestFullscreen().catch(e => console.log(e));
+        startTimer();
+        updateUI();
+        testStarted = true; // Test has officially begun
+    });
+
+    // --- 2. NAVIGATION & STATE ---
+    function showQuestion(index) {
+        questionCards[currentQuestionIndex].classList.remove('active');
+        paletteItems[currentQuestionIndex].classList.remove('current');
+        
+        currentQuestionIndex = index;
+        
+        questionCards[currentQuestionIndex].classList.add('active');
+        paletteItems[currentQuestionIndex].classList.add('current');
+        updateUI();
+    }
+
+    function updateUI() {
+        prevBtn.style.visibility = (currentQuestionIndex === 0) ? 'hidden' : 'visible';
+        nextBtn.style.display = (currentQuestionIndex === totalQuestions - 1) ? 'none' : 'inline-block';
+        finishBtn.style.display = (currentQuestionIndex === totalQuestions - 1) ? 'inline-block' : 'none';
+
+        paletteItems.forEach((item, i) => {
+            item.classList.remove('answered', 'marked');
+            if (questionStates[i] === 1) {
+                item.classList.add('answered');
+            } else if (questionStates[i] === 2) {
+                item.classList.add('marked');
+            }
+        });
+        
+        markBtn.textContent = questionStates[currentQuestionIndex] === 2 ? 'Unmark' : 'Mark for Review';
+    }
+
+    nextBtn.addEventListener('click', () => { if (currentQuestionIndex < totalQuestions - 1) showQuestion(currentQuestionIndex + 1); });
+    prevBtn.addEventListener('click', () => { if (currentQuestionIndex > 0) showQuestion(currentQuestionIndex - 1); });
+    paletteItems.forEach(item => {
+        item.addEventListener('click', () => showQuestion(parseInt(item.dataset.questionIndex)));
+    });
+    
+    document.querySelectorAll('.form-check-input').forEach(radio => {
+        radio.addEventListener('change', () => {
+            const index = parseInt(radio.dataset.questionIndex);
+            if(radio.checked) {
+                if (questionStates[index] !== 1) {
+                    questionStates[index] = 1;
+                    updateUI();
+                }
+            }
+        });
+    });
+    
+    markBtn.addEventListener('click', () => {
+        if (questionStates[currentQuestionIndex] === 2) {
+             const radioGroup = document.querySelectorAll(`input[name="q_${questions[currentQuestionIndex].id}"]`);
+             const isAnswered = Array.from(radioGroup).some(r => r.checked);
+             questionStates[currentQuestionIndex] = isAnswered ? 1 : 0;
+        } else {
+            questionStates[currentQuestionIndex] = 2;
+        }
+        updateUI();
+    });
+    
+    clearBtn.addEventListener('click', () => {
+        const radioGroup = document.querySelectorAll(`input[name="q_${questions[currentQuestionIndex].id}"]`);
+        radioGroup.forEach(radio => radio.checked = false);
+        questionStates[currentQuestionIndex] = 0;
+        updateUI();
+    });
+
+    // --- 3. TIMER & SUBMISSION ---
+    const timerEl = document.getElementById('timer');
+    let timerInterval;
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            time--;
+            if (time < 0) {
+                clearInterval(timerInterval);
+                submitTest("Time's up! Submitting your test automatically.");
+            }
+        }, 1000);
+    }
+    
+    function submitTest(message) {
+        alert(message);
+        window.onbeforeunload = null; // Disable the 'are you sure' prompt
+        testForm.submit();
+    }
+    
+    finishBtn.addEventListener('click', () => {
+        const answeredCount = questionStates.filter(s => s === 1 || s === 2 && document.querySelector(`input[data-question-index="${questionStates.indexOf(2)}"]:checked`)).length;
+        const unansweredCount = totalQuestions - answeredCount;
+        const markedCount = questionStates.filter(s => s === 2).length;
+        
+        const confirmation = confirm(
+            `Are you sure you want to finish the test?\n\n` +
+            `Answered: ${answeredCount}\n` +
+            `Unanswered: ${unansweredCount}\n` +
+            `Marked for Review: ${markedCount}\n`
+        );
+        if (confirmation) {
+            submitTest("Submitting your test...");
+        }
+    });
+
+    // --- 4. PROCTORING LOGIC ---
+    function handleViolation(reason) {
+        if (!testStarted) return;
+        
+        violationCount++;
+        
+        if (violationCount >= 3) {
+            submitTest(`Third warning: ${reason}. The test will now be submitted automatically.`);
+        } else {
+            warningMessage.textContent = `You have received warning ${violationCount} of 2 for ${reason}. Please remain in full-screen and on the test tab. The next violation will result in automatic submission.`;
+            if(violationCount === 2) {
+                 warningMessage.textContent = `FINAL WARNING: You have received warning 2 of 2 for ${reason}. The next violation will result in automatic submission.`;
+            }
+            warningModal.style.display = 'flex';
+        }
+    }
+
+    warningBtn.addEventListener('click', () => {
+        warningModal.style.display = 'none';
+        // Re-enter full-screen if they exited
+        if (!document.fullscreenElement) {
+             document.documentElement.requestFullscreen().catch(e => console.log(e));
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            handleViolation("switching tabs");
+        }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            handleViolation("exiting full-screen mode");
+        }
+    });
+
+    window.onbeforeunload = () => "Are you sure you want to leave? Your progress will be lost.";
+
+</script>
+
+</body>
+</html>
+

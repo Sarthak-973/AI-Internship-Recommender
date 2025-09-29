@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Internship Recommendation System</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-glow: rgba(138, 110, 255, 0.6);
+            --secondary-glow: rgba(255, 100, 200, 0.6);
+            --tertiary-glow: rgba(0, 200, 255, 0.6);
+            --bg-color: #0d0f1a;
+            --card-bg-color: rgba(25, 28, 51, 0.5);
+            --border-color: rgba(138, 110, 255, 0.25);
+            --text-color: #e0e0e0;
+            --text-muted-color: #8892b0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8a6eff, #6f42c1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* --- Login Card Styles --- */
+        .login-card {
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 0 40px rgba(100, 80, 255, 0.15);
+        }
+
+        .login-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(138, 110, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+        }
+
+        .login-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #c2b3ff;
+        }
+
+        .login-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background-color: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted-color);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(138, 110, 255, 0.3);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, #8e2de2, #4a00e0);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 50, 200, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(100, 50, 200, 0.5);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .register-link a {
+            color: #c2b3ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* --- Features Section Styles --- */
+        .features-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .feature-circle {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .feature-circle svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 0.5rem;
+        }
+
+        #feature1 {
+            width: 160px; height: 160px;
+            top: 0; left: 25%;
+            border-color: var(--secondary-glow);
+            box-shadow: 0 0 30px var(--secondary-glow);
+            animation-delay: -1s;
+        }
+        #feature2 {
+            top: 50%; left: 0;
+            border-color: var(--tertiary-glow);
+            box-shadow: 0 0 30px var(--tertiary-glow);
+            animation-delay: -3s;
+        }
+        #feature3 {
+            bottom: 0; left: 30%;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 30px var(--primary-glow);
+            animation-delay: -5s;
+        }
+        #feature4 {
+            top: 35%; right: 0;
+            border-color: var(--secondary-glow);
+            box-shadow: 0 0 30px var(--secondary-glow);
+            animation-delay: 0s;
+        }
+
+        @keyframes float {
+            0% { transform: translatey(0px); }
+            50% { transform: translatey(-20px); }
+            100% { transform: translatey(0px); }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 5rem;
+            }
+            .features-container {
+                min-height: 300px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body { padding: 1rem; }
+            .main-container { padding: 0.5rem; }
+            .login-card { padding: 2rem; }
+            .features-container { display: none; } /* Hide complex animation on small screens */
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <header class="header">
+        <div class="header-logo">AI</div>
+        <h1>AI Internship Recommendation System</h1>
+    </header>
+
+    <div class="content-grid">
+        <!-- Left Side: Login Form -->
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-2.3 19.43a10 10 0 0 0 4.6 0A10 10 0 0 0 12 2Z"/><path d="M6 12a6 6 0 0 1 6-6v0a6 6 0 0 1 6 6Z"/><path d="M12 18a2 2 0 0 0-2-2h4a2 2 0 0 0-2 2Z"/></svg>
+                </div>
+                <h2>Welcome Back!</h2>
+            </div>
+
+            <!-- 
+              Backend Template Code:
+              The following lines are for a backend framework like Flask or Django.
+              They will display an error message if the login fails.
+              I've commented them out so they don't appear as plain text when viewing the HTML directly.
+            -->
+            <!-- {% if error %} -->
+            <!-- <div class="alert alert-danger" style="background-color: #ff33662e; color: #ff8fa5; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;">{{ error }}</div> -->
+            <!-- {% endif %} -->
+
+            <!-- Example of how an error would look (uncomment the div below to see it) -->
+            <!--
+            <div style="background-color: #ff33662e; color: #ff8fa5; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;">
+                Invalid email or password.
+            </div>
+            -->
+
+            <form method="post">
+                <div class="form-group">
+                    <input type="email" class="form-control" name="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+
+            <div class="register-link">
+                <a href="/register">Register here</a>
+            </div>
+        </div>
+
+        <!-- Right Side: Animated Feature Icons -->
+        <div class="features-container">
+            <div class="feature-circle" id="feature1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff80bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Personalized Matches
+            </div>
+            <div class="feature-circle" id="feature2">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00d1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                Skill Analysis
+            </div>
+            <div class="feature-circle" id="feature3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a996ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/><path d="M8 8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8Z"/><path d="M12 11v3"/><path d="M10 16h4"/></svg>
+                Future Ready
+            </div>
+             <div class="feature-circle" id="feature4">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff80bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                Data-Driven Insights
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+
