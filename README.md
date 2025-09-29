@@ -1,116 +1,87 @@
-🚀 AI Internship Recommender 🚀
-Welcome to the AI Internship Recommender, a smart, Flask-powered web application designed to help students and aspiring professionals navigate their career paths. This platform goes beyond simple job listings by providing personalized, data-driven insights through adaptive tests, a professional resume analyzer, and a dynamic resource hub.
+# 🚀 AI Internship Recommender
 
-Our goal is to bridge the gap between academic knowledge and industry requirements, offering users a clear roadmap to success in the competitive tech landscape.
+The **AI Internship Recommender** is a Flask-based web app that helps students explore tech careers, analyze resumes, and take adaptive tests to identify suitable internship paths. It bridges the gap between academic learning and industry expectations with personalized insights.
 
-✨ Key Features
-This application is packed with features designed to provide a comprehensive career-building experience:
+---
 
-🔐 Secure User Authentication: A complete login and registration system to manage user profiles.
+## ✅ Features
 
-📊 Dynamic User Dashboard: A modern, professional dashboard that features:
+### 🔐 User Authentication
+- Secure login & registration
 
-Performance Trend Graph: A visual representation of the user's test performance over time.
+### 🏠 User Dashboard
+- Performance trend chart  
+- Test stats  
+- Explore tech domains with:
+  - Learning roadmaps
+  - Resources
+  - Certifications  
+- Auto-scrolling tech news
 
-At-a-Glance Stats: Key metrics like average score and total tests taken.
+### 🧠 Adaptive Internship Test
+- 30 questions (15 aptitude + 15 technical)  
+- Easy/Medium/Hard mix  
+- Full-screen tracking with violation warnings
 
-Interactive Domain Exploration: Users can explore various tech domains (AI/ML, Data Science, etc.), each with a detailed pop-up modal showing a learning roadmap, free resources, and certification guidance.
+### 📄 Resume Analyzer (AI-Simulated)
+- Upload PDF  
+- ATS score  
+- Suggested job roles  
+- Keyword & section analysis  
+- Improvement tips
 
-Auto-Scrolling Tech News: A continuously scrolling feed of the latest news articles relevant to different tech fields to keep users informed.
+### 📊 Test Results
+- Pie & bar charts  
+- Personalized learning suggestions  
+- Internship recommendations (for 65%+ scores)
 
-🧠 Adaptive Internship Test:
+---
 
-Generates a unique 30-question test with a balanced mix of 15 aptitude and 15 technical questions.
+## 🛠️ Tech Stack
+- **Backend:** Flask (Python)  
+- **Database:** SQLite  
+- **Frontend:** HTML, CSS, JavaScript  
+- **Charts:** Chart.js
 
-Questions are curated with a 5-5-5 split of easy, medium, and hard difficulties.
+---
 
-Proctoring Features: The system warns users for exiting full-screen or switching tabs, with an auto-submit feature after three violations.
+## ⚙️ Setup & Installation
 
-📄 AI-Powered Resume Analyzer:
-
-A dedicated page for users to upload their PDF resume.
-
-Provides an instant (simulated) ATS Friendliness Score.
-
-Analyzes content to suggest Recommended Job Roles, detect Keywords, and check for crucial elements like Action Verbs and Contact Info.
-
-Offers actionable Suggestions for Improvement in a clean, tabbed interface.
-
-📈 Detailed Performance Analysis:
-
-After each test, users receive a comprehensive results page.
-
-Includes a Pie Chart for the overall score and a Bar Chart breaking down performance by topic.
-
-Provides personalized Learning Recommendations and Course Resources based on weak areas.
-
-Conditionally recommends internships from reputable platforms if the user scores above 65%.
-
-🛠️ Tech Stack
-This project is built with a modern and efficient technology stack:
-
-Backend: Python with Flask
-
-Database: SQLite
-
-Frontend: HTML5, CSS3, JavaScript
-
-Charting: Chart.js
-
-Styling: Modern, custom CSS with a futuristic theme.
-
-⚙️ Setup and Installation
-To get the project running on your local machine, follow these simple steps:
-
-Clone the Repository
-
-git clone [https://github.com/your-username/ai-internship-recommender.git](https://github.com/your-username/ai-internship-recommender.git)
+```bash
+# Clone repository
+git clone https://github.com/your-username/ai-internship-recommender.git
 cd ai-internship-recommender
 
-Create a Virtual Environment
-It's recommended to use a virtual environment to manage project dependencies.
-
-# For Windows
+# Create and activate virtual environment
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate      # Windows
+# or
+source venv/bin/activate   # macOS/Linux
 
-# For macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-
-Install Dependencies
-Install all the required Python packages from the requirements.txt file.
-
+# Install dependencies
 pip install -r requirements.txt
 
-(Note: You will need to create a requirements.txt file by running pip freeze > requirements.txt in your terminal.)
-
-Prepare the Database
-Run the prepare_db.py script once to create and populate a fresh db.sqlite file with the correct schema and sample questions.
-
+# Set up the database
 python prepare_db.py
 
-Run the Application
-Start the Flask development server.
-
+# Run the app
 flask run
 
-The application will be available at http://127.0.0.1:5000 in your web browser.
 
 📂 Project Structure
 /<br> 
-├── app.py                    # Main Flask application file with all routes and logic.<br> 
-├── prepare_db.py             # Script to initialize and populate the database.<br> 
-├── db.sqlite                 # The SQLite database file.<br> 
+├── app.py                                    # Main Flask application file with all routes and logic.<br> 
+├── prepare_db.py                             # Script to initialize and populate the database.<br> 
+├── db.sqlite                                 # The SQLite database file.<br> 
 ├── templates/                  <br> 
-│   ├── login.html            # Login page.<br> 
-│   ├── register.html         # Registration page.<br> 
-│   ├── profile.html          # Main user dashboard.<br> 
-│   ├── student_profile.html  # Detailed user profile view.<br> 
-│   ├── test.html             # The proctored test page.<br> 
-│   ├── results.html          # The test results and analysis page.<br> 
-│   └── resume_analyzer.html  # The dedicated resume analyzer page.<br> 
-└── README.md                 # You are here!<br> 
+│   ├── login.html                            # Login page.<br> 
+│   ├── register.html                         # Registration page.<br> 
+│   ├── profile.html                          # Main user dashboard.<br> 
+│   ├── student_profile.html                  # Detailed user profile view.<br> 
+│   ├── test.html                             # The proctored test page.<br> 
+│   ├── results.html                          # The test results and analysis page.<br> 
+│   └── resume_analyzer.html                  # The dedicated resume analyzer page.<br> 
+└── README.md                                 # You are here!<br> 
 
 🚀 Future Enhancements
 This project has a strong foundation with many possibilities for future development:
