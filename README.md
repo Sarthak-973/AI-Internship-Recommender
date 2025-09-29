@@ -74,17 +74,17 @@ flask run
 
 📂 Project Structure
 /<br> 
-├── app.py                                    # Main Flask application file with all routes and logic.<br> 
-├── prepare_db.py                             # Script to initialize and populate the database.<br> 
-├── db.sqlite                                 # The SQLite database file.<br> 
+├── app.py                                    <br> 
+├── prepare_db.py                            <br> 
+├── db.sqlite                                 <br> 
 ├── templates/                                <br> 
-│   ├── login.html                            # Login page.<br> 
-│   ├── register.html                         # Registration page.<br> 
-│   ├── profile.html                          # Main user dashboard.<br> 
-│   ├── student_profile.html                  # Detailed user profile view.<br> 
-│   ├── test.html                             # The proctored test page.<br> 
-│   ├── results.html                          # The test results and analysis page.<br> 
-│   └── resume_analyzer.html                  # The dedicated resume analyzer page.<br> 
-└── README.md                                 # You are here!<br> 
+│   ├── login.html                             <br> 
+│   ├── register.html                           <br> 
+│   ├── profile.html                            <br> 
+│   ├── student_profile.html                       <br> 
+│   ├── test.html                                <br> 
+│   ├── results.html                               <br> 
+│   └── resume_analyzer.html                         <br> 
+└── README.md                                           <br> 
 
 Thank you for checking out the AI Internship Recommender!
