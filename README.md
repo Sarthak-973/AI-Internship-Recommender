@@ -51,29 +51,33 @@ The **AI Internship Recommender** is a Flask-based web app that helps students e
 # Clone repository
 git clone https://github.com/your-username/ai-internship-recommender.git
 cd ai-internship-recommender
-
+```
+```bash
 # Create and activate virtual environment
 python -m venv venv
 venv\Scripts\activate      # Windows
 # or
 source venv/bin/activate   # macOS/Linux
-
+```
+```bash
 # Install dependencies
 pip install -r requirements.txt
-
+```
+```bash
 # Set up the database
 python prepare_db.py
-
+```
+```bash
 # Run the app
 flask run
-
+```
 
 📂 Project Structure
 /<br> 
 ├── app.py                                    # Main Flask application file with all routes and logic.<br> 
 ├── prepare_db.py                             # Script to initialize and populate the database.<br> 
 ├── db.sqlite                                 # The SQLite database file.<br> 
-├── templates/                  <br> 
+├── templates/                                <br> 
 │   ├── login.html                            # Login page.<br> 
 │   ├── register.html                         # Registration page.<br> 
 │   ├── profile.html                          # Main user dashboard.<br> 
