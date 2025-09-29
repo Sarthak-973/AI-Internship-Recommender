@@ -87,15 +87,4 @@ flask run
 │   └── resume_analyzer.html                  # The dedicated resume analyzer page.<br> 
 └── README.md                                 # You are here!<br> 
 
-🚀 Future Enhancements
-This project has a strong foundation with many possibilities for future development:
-
-Real-time News: Integrate a live news API (e.g., NewsAPI) to fetch the latest tech articles automatically.
-
-Advanced ML Model: Implement a real machine learning model for more accurate resume analysis and job role recommendations.
-
-User Progress Tracking: Develop a more detailed skill-tracking system based on multiple test performances.
-
-Company Profiles: Add a section for companies to post internship listings directly on the platform.
-
 Thank you for checking out the AI Internship Recommender!
