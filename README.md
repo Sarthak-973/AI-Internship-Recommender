@@ -99,18 +99,18 @@ The application will be available at http://127.0.0.1:5000 in your web browser.
 
 📂 Project Structure
 /
-├── app.py                  # Main Flask application file with all routes and logic.
-├── prepare_db.py           # Script to initialize and populate the database.
-├── db.sqlite               # The SQLite database file.
-├── templates/
-│   ├── login.html          # Login page.
-│   ├── register.html       # Registration page.
-│   ├── profile.html        # Main user dashboard.
-│   ├── student_profile.html # Detailed user profile view.
-│   ├── test.html           # The proctored test page.
-│   ├── results.html        # The test results and analysis page.
-│   └── resume_analyzer.html # The dedicated resume analyzer page.
-└── README.md               # You are here!
+├── app.py <br>                 # Main Flask application file with all routes and logic.
+├── prepare_db.py <br>           # Script to initialize and populate the database.
+├── db.sqlite <br>              # The SQLite database file.
+├── templates/<br>
+│   ├── login.html<br>          # Login page.
+│   ├── register.html <br>      # Registration page.
+│   ├── profile.html <br>       # Main user dashboard.
+│   ├── student_profile.html<br> # Detailed user profile view.
+│   ├── test.html  <br>         # The proctored test page.
+│   ├── results.html  <br>      # The test results and analysis page.
+│   └── resume_analyzer.html <br># The dedicated resume analyzer page.
+└── README.md <br>              # You are here!
 
 🚀 Future Enhancements
 This project has a strong foundation with many possibilities for future development:
